@@ -1,0 +1,63 @@
+{% extends 'soprano/base.html' %}
+{% load staticfiles %}
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
+{% if messages %}
+    <script>
+    $(document).ready(function() {
+        {% for message in messages %}
+            $.notify({
+                title: 'Success',
+                message: '{{ message }}'
+            },{
+                type: 'minimalist',
+                delay: 5000,
+                icon_type: 'image',
+                template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                    '<img data-notify="icon" class="img-circle pull-left">' +
+                    '<span data-notify="title">{1}</span>' +
+                    '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+        {% endfor %}
+    });
+    </script>
+{% endif %}
+{% endblock extra_js %}
+{% block content %}
+<div class="sop-overlay">
+    <img src="{% static 'img/Facebook.svg' %}" />
+    <span>Working on it...</span>
+</div>
+<div class="sop-container">
+    <div class="sop-box" id="sop-start-box">
+        <div class="sop-box-content">
+            <h1>RPPA Database</h1>
+            <div class="sop-button">View Data</div>
+            <div class="sop-button sop-button-margin" id="sop-home-upload">Upload New Data</div>
+        </div>
+    </div>
+
+    <div class="sop-box sop-fast-animation" id="sop-upload-box" style="display:none">
+        <form class="sop-box-content" method="post" action="/upload/" enctype="multipart/form-data" id="sop-form">
+            {% csrf_token %}
+            <span class="fa fa-arrow-left fa-2x sop-back-arrow"></span>
+            <h1>Upload Data</h1>
+            <select class="sop-select" name="layout-pk">
+                {% for layout in layouts %}
+                <option value="{{ layout.pk }}">{{ layout.name }}</option>
+                {% endfor %}
+            </select>
+            <label>
+                <span class="sop-button sop-button-margin">Browse...</span>
+                <input type="file" name="upload-file" id="sop-home-file"/>
+            </label>
+            <span id="sop-home-file-display"></span>
+            <button class="sop-button" id="sop-home-submit" style="display:none">Go</button>
+        </form>
+    </div>
+</div>
+    <a href="/add-print/">Add Print</a>
+    <a href="/upload-tech-data/">Add Technical Data</a>
+    <a href="/download-sheet/">Download Technical Data Sheet</a>
+{% endblock content %}

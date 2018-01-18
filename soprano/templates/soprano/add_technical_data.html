@@ -1,0 +1,21 @@
+{% extends 'soprano/base.html' %}
+{% block content %}
+    <h1>Add Technical Data</h1>
+    <form enctype="multipart/form-data" method="post" action="/upload-tech-data/">
+        {% csrf_token %}
+        <select name="print-pk">
+            {% for print in prints %}
+            <option value="{{ print.pk }}">{{ print.name }}</option>
+            {% endfor %}
+        </select><br/>
+        <label>
+            Scan number: <input type="number" name="scan-number" />
+        </label><br/>
+        <label>
+            <span class="sop-button sop-button-margin">Browse for TechData file...</span>
+            <input type="file" name="upload-file" id="sop-home-file"/>
+        </label><br/>
+        <span id="sop-home-file-display"></span>
+        <button class="sop-button" id="sop-home-submit">Go</button>
+    </form>
+{% endblock content %}

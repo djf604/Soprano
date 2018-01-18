@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Soprano | PsychENCODE at UChicago</title>
+
+{#    <link rel="stylesheet" href="{% static 'css/soprano.css' %}" />#}
+
+<link href="https://fonts.googleapis.com/css?family=Hind:300" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'animate.css/animate.css' %}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'remarkable-bootstrap-notify/dist/bootstrap-notify.min.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
+</head>
+<body>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

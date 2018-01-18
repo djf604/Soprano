@@ -1,0 +1,14 @@
+{% extends 'soprano/base.html' %}
+{% block content %}
+    <h1>Add a Print and Layout</h1>
+    <form enctype="multipart/form-data" method="post" action="/upload-print/">
+        {% csrf_token %}
+        Print name: <input name="print-name"><br/>
+        <label>
+            <span class="sop-button sop-button-margin">Browse for Layout file...</span>
+            <input type="file" name="upload-file" id="sop-home-file"/>
+        </label>
+        <span id="sop-home-file-display"></span>
+        <button class="sop-button" id="sop-home-submit">Go</button>
+    </form>
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% extends 'soprano/base.html' %}
+{% block content %}
+    <h1>Download Technical Data</h1>
+    <form method="post" action="/download-sheet/">
+        {% csrf_token %}
+        Print name: <input name="print-name"><br/>
+        <label>
+            <span class="sop-button sop-button-margin">Browse for Layout file...</span>
+            <input type="file" name="upload-file" id="sop-home-file"/>
+        </label>
+        <span id="sop-home-file-display"></span>
+        <button class="sop-button" id="sop-home-submit">Go</button>
+    </form>
+{% endblock content %}
