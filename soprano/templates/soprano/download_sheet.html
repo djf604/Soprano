@@ -1,14 +1,94 @@
 {% extends 'soprano/base.html' %}
+{% load staticfiles %}
+{% block extra_js %}
+<script src="{% static 'js/download.js' %}"></script>
+<script src="{% static 'js/download_sheet.js' %}"></script>
+{% endblock %}
 {% block content %}
     <h1>Download Technical Data</h1>
+    <button class="sop-button filter">By Sample</button>
+    <button class="sop-button filter">By Antibody</button>
+    <button class="sop-button filter">By Gel</button>
+    <button class="sop-button filter">By Print</button>
+    <button class="sop-button filter">By Scan</button>
+    <button class="sop-button filter">Get All</button>
     <form method="post" action="/download-sheet/">
         {% csrf_token %}
-        Print name: <input name="print-name"><br/>
-        <label>
-            <span class="sop-button sop-button-margin">Browse for Layout file...</span>
-            <input type="file" name="upload-file" id="sop-home-file"/>
-        </label>
-        <span id="sop-home-file-display"></span>
-        <button class="sop-button" id="sop-home-submit">Go</button>
+        <input type="hidden" id="filter-type" name="filter-type" value="by-sample"/>
+        <div id="by-sample" class="filter-fields">
+            <label for="samplename">Sample BID: </label>
+            <select class="sop-select" id="samplename" name="by-sample-name">
+                {% for sample in samples %}
+                <option value="{{ sample.name }}">{{ sample.name }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <input type="checkbox" id="sampleincludeself" name="by-sample-include-self" value="yes">
+            <label for="sampleincludeself">Include Sample name as column</label><br/>
+
+            <button class="sop-button" type="submit">Download</button>
+        </div>
+        <div id="by-antibody" class="filter-fields" style="display:none">
+            <label for="antibodyname">Antibody name: </label>
+            <select class="sop-select" id="antibodyname" name="by-antibody-name">
+                {% for antibody in antibodies %}
+                <option value="{{ antibody.name }}">{{ antibody.name }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <input type="checkbox" id="antibodyincludeself" name="by-antibody-include-self" value="yes">
+            <label for="antibodyincludeself">Include Antibody name as column</label><br/>
+
+            <button class="sop-button" type="submit">Download</button>
+        </div>
+        <div id="by-gel" class="filter-fields" style="display:none">
+            <label for="gelprintname">Print name: </label>
+            <select class="sop-select" id="gelprintname" name="by-gel-print-name">
+                {% for print_ in prints %}
+                <option value="{{ print_.name }}">{{ print_.name }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <label for="gelantibodyname">Antibody name: </label>
+            <select class="sop-select" id="gelantibodyname" name="by-gel-antibody-name">
+                {% for antibody in antibodies %}
+                <option value="{{ antibody.name }}">{{ antibody.name }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <input type="checkbox" id="gelincludeprint" name="by-gel-include-print" value="yes">
+            <label for="gelincludeprint">Include Print name as column</label><br/>
+            <input type="checkbox" id="gelincludeantibody" name="by-gel-include-antibody" value="yes">
+            <label for="gelincludeantibody">Include Antibody name as column</label><br/>
+            <input type="checkbox" id="gelincludescan" name="by-gel-include-scan" value="yes">
+            <label for="gelincludescan">Include Scan number as column</label><br/>
+
+            <button class="sop-button" type="submit">Download</button>
+        </div>
+        <div id="by-print" class="filter-fields" style="display:none">
+            <label for="printname">Print name: </label>
+            <select class="sop-select" id="printname" name="by-print-name">
+                {% for print_ in prints %}
+                <option value="{{ print_.name }}">{{ print_.name }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <input type="checkbox" id="printincludeself" name="by-print-include-self" value="yes">
+            <label for="printincludeself">Include Print name as column</label><br/>
+
+            <button class="sop-button" type="submit">Download</button>
+        </div>
+        <div id="by-scan" class="filter-fields" style="display:none">
+            <label for="scanname">Scan: </label>
+            <select class="sop-select" id="scanname" name="by-scan-pk">
+                {% for scan in scans %}
+                <option value="{{ scan.pk }}">{{ scan.print.name }}: Scan {{ scan.num }}</option>
+                {% endfor %}
+            </select><br/><br/>
+            <input type="checkbox" id="scanincludeself" name="by-scan-include-self" value="yes">
+            <label for="scanincludeself">Include Scan number as column</label><br/>
+
+            <button class="sop-button" type="submit">Download</button>
+        </div>
+        <div id="get-all"></div>
     </form>
+    <a href="/">
+        <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
+    </a>
+
 {% endblock content %}

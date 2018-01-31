@@ -2,9 +2,7 @@
  *
  *
  */
-$blue-yonder: #4D7298;
-$wild-blue-yonder: #A0A9CC;
-$ghost-white: #F7F9F9;
+@import 'colors', 'checkboxes';
 
 @mixin absolute-center() {
   display: flex;
@@ -12,47 +10,104 @@ $ghost-white: #F7F9F9;
   align-items: center;
 }
 
-
-body {
+html, body {
   background-color: $blue-yonder;
-  height:100%;
-  height: 100vh;
+  height: 100%;
   margin: 0;
+  font-family: 'Hind', sans-serif;
+  color: #48425E;
 }
 
-.sop-container {
-  @include absolute-center();
-  height: 100%;
+a {
+  color: #48425E;
+  text-decoration: none;
+  &:visited { color: #48425E; }
 }
 
 .sop-box {
-  @include absolute-center();
   background-color: $wild-blue-yonder;
-  height: 60%;
-  width: 50%;
+  width: 75%;
+  display: flex;
+  justify-content: center;
   box-shadow: 0 50px 50px rgba(0, 0, 0, .2);
-  color: $ghost-white;
-  font-family: 'Hind', sans-serif;
-  //font-size: 6rem;
-  position: relative;
 
   .sop-box-content {
-    @include absolute-center();
-    flex-direction: column;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 5%;
     margin: 6px;
     border: 6px solid $blue-yonder;
 
     h1 {
-      font-size: 5rem;
-      margin: 0;
+      font: {
+        family: 'Londrina Solid', cursive;
+        size: 5rem;
+        weight: 300;
+      }
+      margin-top: 0;
     }
+
+    input[type="text"], input[type="number"] {
+      padding-top: 1rem;
+
+      font: {
+        family: 'Open Sans', sans-serif;
+        size: 2.4rem;
+      }
+      background-color: transparent;
+      outline: none;
+      border: none;
+      border-bottom: 3px solid $blue-yonder;
+    }
+
+    .sop-filename-display {
+      font-size: 1.5rem;
+    }
+
+
   }
 }
+
+label {
+  font-size: 3rem;
+  cursor: text;
+}
+
+.sop-container {
+  @include absolute-center();
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+//.sop-box {
+//  @include absolute-center();
+//  background-color: $wild-blue-yonder;
+//  height: 60%;
+//  width: 75%;
+//  box-shadow: 0 50px 50px rgba(0, 0, 0, .2);
+//  color: $ghost-white;
+//  font-family: 'Hind', sans-serif;
+//  //font-size: 6rem;
+//  position: relative;
+//
+//  .sop-box-content {
+//    @include absolute-center();
+//    flex-direction: column;
+//    position: absolute;
+//    top: 0;
+//    left: 0;
+//    bottom: 0;
+//    right: 0;
+//    margin: 6px;
+//    border: 6px solid $blue-yonder;
+//
+//    h1 {
+//      font-size: 5rem;
+//      margin: 0;
+//    }
+//  }
+//}
 
 .sop-button {
   display: inline-block;
@@ -75,6 +130,7 @@ body {
   background-image: none;
   border: 1px solid transparent;
   transition: transform 0.2s;
+  font-family: 'Hind', sans-serif;
 
   &:focus {
     outline: 0;
@@ -94,6 +150,50 @@ body {
 }
 
 
+.sop-display-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  a {
+    margin: 2rem 0 0 2rem;
+    flex-grow: 1;
+    width: calc(100% * (1/4) - 2rem - 1px);
+    display: block;
+  }
+
+  div {
+    color: $ghost-white;
+    display: flex;
+    background-color: $blue-yonder;
+    //margin: 2rem 0 0 2rem;
+    //flex-grow: 1;
+    //width: calc(100% * (1/4) - 10px - 1px);
+    padding: 3rem 2rem;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.7);
+    }
+
+    span.fa {
+      font-size: 5rem;
+    }
+
+    span {
+      text-align: center;
+      font-size: 2rem;
+    }
+  }
+}
+
 .sop-select {
   width: 85%;
   outline: 0;
@@ -102,7 +202,7 @@ body {
   color: $ghost-white;
   padding: 6px;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .sop-upload-button-wrapper {
@@ -121,7 +221,8 @@ input[type=file] {
 .sop-back-arrow {
   position: absolute;
   top: 12px;
-  left: 12px;
+  right: 12px;
+  cursor: pointer;
 }
 
 .sop-overlay {
@@ -132,7 +233,7 @@ input[type=file] {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;
@@ -143,10 +244,18 @@ input[type=file] {
     transform: scale(2.0);
   }
 
-  & span {
+  & span:nth-child(2) {
     font: {
       family: 'Hind', sans-serif;
       size: 6rem;
+      weight: bold;
+    }
+  }
+
+  & span:nth-child(3) {
+    font: {
+      family: 'Hind', sans-serif;
+      size: 2rem;
       weight: bold;
     }
   }
@@ -154,6 +263,16 @@ input[type=file] {
 
 .sop-fast-animation {
   animation-duration: 0.5s !important;
+}
+
+.filter-fields input[type="checkbox"] {
+  transform: scale(1.8);
+}
+
+.sop-user-auth {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
 }
 
 .alert-minimalist {

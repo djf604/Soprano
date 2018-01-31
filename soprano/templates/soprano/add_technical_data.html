@@ -1,21 +1,29 @@
 {% extends 'soprano/base.html' %}
+{% load staticfiles %}
+{% block extra_js %}
+    <script src="{% static 'js/common.js' %}"></script>
+    <script src="{% static 'js/uploadbox.js' %}"></script>
+{% endblock %}
 {% block content %}
     <h1>Add Technical Data</h1>
     <form enctype="multipart/form-data" method="post" action="/upload-tech-data/">
         {% csrf_token %}
-        <select name="print-pk">
+        <select name="print-pk" class="sop-select">
             {% for print in prints %}
             <option value="{{ print.pk }}">{{ print.name }}</option>
             {% endfor %}
         </select><br/>
-        <label>
-            Scan number: <input type="number" name="scan-number" />
-        </label><br/>
+        <label>Scan number: </label>
+        <input type="number" name="scan-number" />
+        <br/>
         <label>
             <span class="sop-button sop-button-margin">Browse for TechData file...</span>
-            <input type="file" name="upload-file" id="sop-home-file"/>
-        </label><br/>
-        <span id="sop-home-file-display"></span>
-        <button class="sop-button" id="sop-home-submit">Go</button>
+            <input type="file" name="upload-file"/>
+        </label>
+        <span class="sop-filename-display"></span><br/>
+        <button class="sop-button" type="submit" style="display:none">Go</button>
     </form>
+    <a href="/">
+        <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
+    </a>
 {% endblock content %}

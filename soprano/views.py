@@ -1,15 +1,19 @@
+import uuid
+
 from django.shortcuts import render
 from django.views import View
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from pyexcel.exceptions import FileTypeNotSupported
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 import soprano.util
 from soprano.models import Layout
 from soprano.util import normalize_sheet_file
 
-from soprano.models import Print
+from soprano.models import Print, Scan, Sample, Antibody
 from soprano.uploaders import print_layout_uploader, technical_data_uploader
+from soprano import gatherers
 
 # Create your views here.
 
@@ -22,7 +26,7 @@ class FrontEnd(object):
             }
             return render(request, 'soprano/home.html', context)
 
-    class HandleTechnicalDataUpload(View):
+    class HandleTechnicalDataUpload(LoginRequiredMixin, View):
         def get(self, request):
             context = {
                 'prints': Print.objects.all()
@@ -43,9 +47,75 @@ class FrontEnd(object):
                 ))
             return HttpResponseRedirect('/')
 
-    class HandlePrintUpload(View):
+    class HandlePrintUpload(LoginRequiredMixin, View):
+        def get(self, request):
+            return render(request, 'soprano/add_print.html')
+
         def post(self, request):
             normalized_sheet = normalize_sheet_file(request.FILES['upload-file'])
             if normalized_sheet is not None:
                 print_layout_uploader(normalized_sheet, request.POST['print-name'])
             return HttpResponseRedirect('/')
+
+    class HandleDataDownload(LoginRequiredMixin, View):
+        def get(self, request):
+            context = {
+                'samples': sorted(Sample.objects.all(), key=lambda r: r.name),
+                'antibodies': Antibody.objects.all(),
+                'prints': Print.objects.all(),
+                'scans': Scan.objects.all()
+            }
+            return render(request, 'soprano/download_sheet.html', context)
+
+        def post(self, request):
+            uuid_tag = str(uuid.uuid4())[:8]
+            filter_type = request.POST['filter-type']
+            if filter_type == 'get-all':
+                df = gatherers.get_all()
+                filename = 'All_RPPA_data_{}.csv'.format(uuid_tag)
+            elif filter_type == 'by-sample':
+                df = gatherers.by_sample(
+                    sample_name=request.POST['by-sample-name'],
+                    include_self='by-sample-include-self' in request.POST
+                )
+                filename = 'Sample_{}_RPPA_data_{}.csv'.format(request.POST['by-sample-name'], uuid_tag)
+            elif filter_type == 'by-antibody':
+                df = gatherers.by_antibody(
+                    antibody_name=request.POST['by-antibody-name'],
+                    include_self='by-antibody-include-self' in request.POST
+                )
+                filename = 'Antibody_{}_RPPA_data_{}.csv'.format(request.POST['by-antibody-name'], uuid_tag)
+            elif filter_type == 'by-gel':
+                include_as_columns = [
+                    e
+                    for e in ('print', 'antibody', 'scan')
+                    if 'by-gel-include-' + e in request.POST
+                ]
+                df = gatherers.by_gel(
+                    print_name=request.POST['by-gel-print-name'],
+                    antibody_name=request.POST['by-gel-antibody-name'],
+                    include=include_as_columns
+                )
+                filename = 'Gel_{}_{}_RPPA_data_{}.csv'.format(
+                    request.POST['by-gel-print-name'],
+                    request.POST['by-gel-antibody-name'],
+                    uuid_tag
+                )
+            elif filter_type == 'by-print':
+                df = gatherers.by_print(
+                    print_name=request.POST['by-print-name'],
+                    include_self='by-print-include-self' in request.POST
+                )
+                filename = 'Print_{}_RPPA_data_{}.csv'.format(request.POST['by-print-name'], uuid_tag)
+            else:  # by-scan
+                df = gatherers.by_scan_pk(
+                    scan_pk=request.POST['by-scan-pk'],
+                    include_self='by-scan-include-self' in request.POST
+                )
+                scan = Scan.objects.get(pk=request.POST['by-scan-pk'])
+                filename = 'Scan_{}_{}_RPPA_data_{}.csv'.format(scan.print.name, scan.num, uuid_tag)
+
+            response = HttpResponse(content_type='text/csv')
+            response['X-Filename'] = filename
+            response.write(df.to_csv(index=None))
+            return response

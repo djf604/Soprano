@@ -1,7 +1,7 @@
 import os
 import math
 from soprano.models import (LayoutConstant, Layout, LayoutSpot, BioEntity, Sample, Print,
-                            Antibody, Gel, Scan, SpotData)
+                            Antibody, Gel, Scan, SpotData, CaseIdToBidMapEntry)
 from soprano.util import parse_acquire_time
 
 LAYOUT_TABLE_SLICE = slice(5, 22)
@@ -32,7 +32,16 @@ def print_layout_uploader(sheet, print_name):
             if spot_value in layout_constants:
                 spot_bioentity = BioEntity(layout_constant=LayoutConstant.objects.get(name=spot_value))
             else:
-                sample = Sample.objects.get_or_create(name=spot_value)[0]
+                # This value is a real sample
+                try:
+                    bid = CaseIdToBidMapEntry.objects.get(case_id=spot_value.strip().upper()).bid
+                except CaseIdToBidMapEntry.DoesNotExist:
+                    # Abort and roll back everything
+                    print_.delete()
+                    print('{} does not exist'.format(spot_value))
+                    return False
+
+                sample = Sample.objects.get_or_create(name=bid, case_id=spot_value.strip().upper())[0]
                 sample.print.add(print_)
                 sample.save()
                 spot_bioentity = BioEntity(sample=sample)

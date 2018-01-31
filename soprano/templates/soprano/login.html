@@ -1,0 +1,17 @@
+{% extends 'soprano/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <h1>Login to Soprano</h1>
+    <form enctype="multipart/form-data" method="post" action="/login/">
+        {% csrf_token %}
+        <label for="username">Username: </label>
+        <input name="username" id="username" type="text"><br/>
+        <label for="passwd">Password: </label>
+        <input name="password" id="passwd" type="text"><br/><br/>
+        <button class="sop-button" type="submit"><span class="fa fa-sign-in"></span>&nbsp;&nbsp;Login</button>
+    </form>
+    <a href="/">
+        <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
+    </a>
+
+{% endblock content %}

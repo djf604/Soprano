@@ -25,39 +25,40 @@
 {% endif %}
 {% endblock extra_js %}
 {% block content %}
-<div class="sop-overlay">
-    <img src="{% static 'img/Facebook.svg' %}" />
-    <span>Working on it...</span>
-</div>
-<div class="sop-container">
-    <div class="sop-box" id="sop-start-box">
-        <div class="sop-box-content">
-            <h1>RPPA Database</h1>
-            <div class="sop-button">View Data</div>
-            <div class="sop-button sop-button-margin" id="sop-home-upload">Upload New Data</div>
-        </div>
+    <h1>Soprano RPPA Database</h1>
+    <div class="sop-display-container">
+        {% if user.is_authenticated %}
+        <a href="/upload-print/">
+            <div class="sop-display-button-lg">
+                <span class="fa fa-paint-brush"></span>
+                <span>Add a Print</span>
+            </div>
+        </a>
+        <a href="/upload-tech-data/">
+            <div class="sop-display-button-lg">
+                <span class="fa fa-th"></span>
+                <span>Add Technical Data</span>
+            </div>
+        </a>
+        <a href="/download-sheet/">
+            <div class="sop-display-button-lg">
+                <span class="fa fa-cloud-download"></span>
+                <span>Download Data</span>
+            </div>
+        </a>
+        {% else %}
+        <a href="/login/?next=/">
+            <div class="sop-display-button-lg">
+                <span class="fa fa-sign-in"></span>
+                <span>Login</span>
+            </div>
+        </a>
+        {% endif %}
     </div>
-
-    <div class="sop-box sop-fast-animation" id="sop-upload-box" style="display:none">
-        <form class="sop-box-content" method="post" action="/upload/" enctype="multipart/form-data" id="sop-form">
-            {% csrf_token %}
-            <span class="fa fa-arrow-left fa-2x sop-back-arrow"></span>
-            <h1>Upload Data</h1>
-            <select class="sop-select" name="layout-pk">
-                {% for layout in layouts %}
-                <option value="{{ layout.pk }}">{{ layout.name }}</option>
-                {% endfor %}
-            </select>
-            <label>
-                <span class="sop-button sop-button-margin">Browse...</span>
-                <input type="file" name="upload-file" id="sop-home-file"/>
-            </label>
-            <span id="sop-home-file-display"></span>
-            <button class="sop-button" id="sop-home-submit" style="display:none">Go</button>
-        </form>
-    </div>
-</div>
-    <a href="/add-print/">Add Print</a>
-    <a href="/upload-tech-data/">Add Technical Data</a>
-    <a href="/download-sheet/">Download Technical Data Sheet</a>
+    {% if user.is_authenticated %}
+    <span class="sop-user-auth">
+        Logged in as {{ user }} |
+        <a href="/logout?next=/">Logout&nbsp;<span class="fa fa-sign-out"></span></a>
+    </span>
+    {% endif %}
 {% endblock content %}

@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Soprano | PsychENCODE at UChicago</title>
 
-{#    <link rel="stylesheet" href="{% static 'css/soprano.css' %}" />#}
+    <link rel="stylesheet" href="{% static 'css/soprano.css' %}" />
 
-<link href="https://fonts.googleapis.com/css?family=Hind:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Hind:300|Londrina+Solid:300|Open+Sans" rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'animate.css/animate.css' %}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
+    <script src="{% static 'js/common.js' %}"></script>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'remarkable-bootstrap-notify/dist/bootstrap-notify.min.js' %}"></script>
     {% block extra_js %}
@@ -21,8 +22,19 @@
 </head>
 <body>
 
-{% block content %}
-{% endblock %}
+<div class="sop-overlay">
+    <img src="{% static 'img/Facebook.svg' %}" />
+    <span>Please wait...</span>
+    <span><script>getLoadingPhrase();</script></span>
+</div>
 
+<div class="sop-container">
+    <div class="sop-box sop-fast-animation animated fadeInDown">
+        <div class="sop-box-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
 </body>
 </html>

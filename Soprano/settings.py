@@ -132,6 +132,7 @@ BOWER_INSTALLED_APPS = (
     'bootstrap',
     'animate.css',
     'remarkable-bootstrap-notify'
+    
 )
 
 
@@ -144,6 +145,9 @@ STATIC_ROOT = STATIC_PATH
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # Always use IPython for shell_plus
 SHELL_PLUS = 'ipython'

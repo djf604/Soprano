@@ -107,7 +107,8 @@ class BioEntity(models.Model):
 
 
 class Sample(models.Model):
-    name = models.CharField('Sample Name', max_length=128, unique=True)
+    name = models.CharField('Sample BID', max_length=64, unique=True)
+    case_id = models.CharField('Sample Case ID', max_length=64, blank=True, null=True)
     print = models.ManyToManyField('Print')
 
     def as_dataframe(self, include_self=False):
@@ -115,6 +116,16 @@ class Sample(models.Model):
             s.as_list(add_sample=include_self)
             for s in self.bioentity_set.first().spotdata_set.all()
         ], columns=SpotData.headers(add_sample=include_self))
+
+
+class SampleCollection(models.Model):
+    name = models.CharField('Sample Collection Name', max_length=128)
+
+
+class CaseIdToBidMapEntry(models.Model):
+    case_id = models.CharField('Case ID', max_length=64, unique=True)
+    bid = models.CharField('BID', max_length=64, unique=True)
+    collection = models.ForeignKey('SampleCollection')
 
 
 class LayoutConstant(models.Model):
