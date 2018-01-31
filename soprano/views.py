@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from pyexcel.exceptions import FileTypeNotSupported
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 import soprano.util
 from soprano.models import Layout
@@ -45,7 +46,7 @@ class FrontEnd(object):
                 messages.add_message(request, messages.INFO, 'Data from {} was successfully put into the database.'.format(
                     str(request.FILES['upload-file'])
                 ))
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse_lazy('index'))
 
     class HandlePrintUpload(LoginRequiredMixin, View):
         def get(self, request):
@@ -55,7 +56,7 @@ class FrontEnd(object):
             normalized_sheet = normalize_sheet_file(request.FILES['upload-file'])
             if normalized_sheet is not None:
                 print_layout_uploader(normalized_sheet, request.POST['print-name'])
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse_lazy('index'))
 
     class HandleDataDownload(LoginRequiredMixin, View):
         def get(self, request):

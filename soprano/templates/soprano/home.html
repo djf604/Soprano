@@ -28,26 +28,26 @@
     <h1>Soprano RPPA Database</h1>
     <div class="sop-display-container">
         {% if user.is_authenticated %}
-        <a href="/upload-print/">
+        <a href="{% url 'upload_print' %}">
             <div class="sop-display-button-lg">
                 <span class="fa fa-paint-brush"></span>
                 <span>Add a Print</span>
             </div>
         </a>
-        <a href="/upload-tech-data/">
+        <a href="{% url 'upload_tech_data' %}">
             <div class="sop-display-button-lg">
                 <span class="fa fa-th"></span>
                 <span>Add Technical Data</span>
             </div>
         </a>
-        <a href="/download-sheet/">
+        <a href="{% url 'download_sheet' %}">
             <div class="sop-display-button-lg">
                 <span class="fa fa-cloud-download"></span>
                 <span>Download Data</span>
             </div>
         </a>
         {% else %}
-        <a href="/login/?next=/">
+        <a href="{% url 'login' %}?next={% url 'index' %}">
             <div class="sop-display-button-lg">
                 <span class="fa fa-sign-in"></span>
                 <span>Login</span>
@@ -58,7 +58,7 @@
     {% if user.is_authenticated %}
     <span class="sop-user-auth">
         Logged in as {{ user }} |
-        <a href="/logout?next=/">Logout&nbsp;<span class="fa fa-sign-out"></span></a>
+        <a href="{% url 'logout' %}?next={% url 'index' %}">Logout&nbsp;<span class="fa fa-sign-out"></span></a>
     </span>
     {% endif %}
 {% endblock content %}

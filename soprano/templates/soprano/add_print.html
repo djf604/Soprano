@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     <h1>Add a Print and Layout</h1>
-    <form enctype="multipart/form-data" method="post" action="/upload-print/">
+    <form enctype="multipart/form-data" method="post" action="{% url 'upload_print' %}">
         {% csrf_token %}
         <label for="printname">Print name: </label>
         <input name="print-name" id="printname" type="text"><br/>
@@ -16,7 +16,7 @@
         <span class="sop-filename-display"></span><br/>
         <button class="sop-button" type="submit" style="display:none">Go</button>
     </form>
-    <a href="/">
+    <a href="{% url 'index' %}">
         <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
     </a>
 

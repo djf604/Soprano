@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
     <h1>Add Technical Data</h1>
-    <form enctype="multipart/form-data" method="post" action="/upload-tech-data/">
+    <form enctype="multipart/form-data" method="post" action="{% url 'upload_tech_data' %}">
         {% csrf_token %}
         <select name="print-pk" class="sop-select">
             {% for print in prints %}
@@ -23,7 +23,7 @@
         <span class="sop-filename-display"></span><br/>
         <button class="sop-button" type="submit" style="display:none">Go</button>
     </form>
-    <a href="/">
+    <a href="{% url 'index' %}">
         <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
     </a>
 {% endblock content %}

@@ -12,7 +12,7 @@
     <button class="sop-button filter">By Print</button>
     <button class="sop-button filter">By Scan</button>
     <button class="sop-button filter">Get All</button>
-    <form method="post" action="/download-sheet/">
+    <form method="post" action="{% url 'download_sheet' %}">
         {% csrf_token %}
         <input type="hidden" id="filter-type" name="filter-type" value="by-sample"/>
         <div id="by-sample" class="filter-fields">
@@ -87,7 +87,7 @@
         </div>
         <div id="get-all"></div>
     </form>
-    <a href="/">
+    <a href="{% url 'index' %}">
         <span class="sop-back-arrow fa fa-times" style="font-size:3rem"></span>
     </a>
 
