@@ -166,7 +166,7 @@ a {
       font-size: 5rem;
       font-weight: 300;
       margin-top: 0; }
-    .sop-box .sop-box-content input[type="text"], .sop-box .sop-box-content input[type="number"] {
+    .sop-box .sop-box-content input[type="text"], .sop-box .sop-box-content input[type="number"], .sop-box .sop-box-content input[type="password"] {
       padding-top: 1rem;
       font-family: 'Open Sans', sans-serif;
       font-size: 2.4rem;
