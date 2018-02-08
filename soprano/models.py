@@ -12,6 +12,12 @@ class Print(models.Model):
             df.insert(0, 'print', self.name)
         return df
 
+    def __str__(self):
+        return 'Print {}'.format(self.name)
+
+    def __unicode__(self):
+        return self.__str__()
+
 
 class Scan(models.Model):
     print = models.ForeignKey('Print')
@@ -29,6 +35,12 @@ class Scan(models.Model):
 
     class Meta:
         unique_together = ('print', 'num')
+
+    def __str__(self):
+        return 'Scan {}:{}'.format(self.print.name, self.num)
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class Gel(models.Model):
@@ -50,6 +62,12 @@ class Gel(models.Model):
     def get_data_by_spot(self, array, spot):
         return self.spotdata_set.get(array_name=array.upper(), spot_name=spot.upper())
 
+    def __str__(self):
+        return 'Gel {}:{}'.format(self.print.name, self.antibody.name)
+
+    def __unicode__(self):
+        return self.__str__()
+
 
 class Antibody(models.Model):
     name = models.CharField('Antibody Name', max_length=64, unique=True)
@@ -59,6 +77,12 @@ class Antibody(models.Model):
         if include_self:
             df.insert(0, 'antibody', self.name)
         return df
+
+    def __str__(self):
+        return 'Antibody {}'.format(self.name)
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class Layout(models.Model):
@@ -70,6 +94,12 @@ class Layout(models.Model):
             array_spot=spot.upper()
         ).first().bioentity
         return bioen.get() if dereference else bioen
+
+    def __str__(self):
+        return 'Layout {}'.format(self.print.name)
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class LayoutSpot(models.Model):
@@ -105,6 +135,17 @@ class BioEntity(models.Model):
         else:
             raise ValueError('Bioentity is not set')
 
+    def __str__(self):
+        if self.sample:
+            return 'BioEntity [{}]'.format(self.sample)
+        elif self.layout_constant:
+            return 'BioEntity [{}]'.format(self.layout_constant)
+        else:
+            return 'BioEntity [none] pk: {}'.format(self.pk)
+
+    def __unicode__(self):
+        return self.__str__()
+
 
 class Sample(models.Model):
     name = models.CharField('Sample BID', max_length=64, unique=True)
@@ -117,15 +158,33 @@ class Sample(models.Model):
             for s in self.bioentity_set.first().spotdata_set.all()
         ], columns=SpotData.headers(add_sample=include_self))
 
+    def __str__(self):
+        return 'Sample {}:{}'.format(self.name, self.print.name)
+
+    def __unicode__(self):
+        return self.__str__()
+
 
 class SampleCollection(models.Model):
     name = models.CharField('Sample Collection Name', max_length=128)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class CaseIdToBidMapEntry(models.Model):
     case_id = models.CharField('Case ID', max_length=64, unique=True)
     bid = models.CharField('BID', max_length=64, unique=True)
     collection = models.ForeignKey('SampleCollection')
+
+    def __str__(self):
+        return 'BID map: {} => {}'.format(self.case_id, self.bid)
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 class LayoutConstant(models.Model):
@@ -205,3 +264,11 @@ class SpotData(models.Model):
         if add_sample:
             return [self.bioentity.get().name] + spotdata_data
         return spotdata_data
+
+    def __str__(self):
+        return 'Spot Data: {} | {} | {}:{}:{}'.format(
+            self.gel, self.bioentity, self.array_name, self.spot_name, self.channel
+        )
+
+    def __unicode__(self):
+        return self.__str__()
