@@ -39,7 +39,7 @@ def print_layout_uploader(sheet, print_name):
                     # Abort and roll back everything
                     print_.delete()
                     print('{} does not exist'.format(spot_value))
-                    raise
+                    raise ValueError('{} does not exist'.format(spot_value))
 
                 sample = Sample.objects.get_or_create(name=bid, case_id=spot_value.strip().upper())[0]
                 sample.print.add(print_)
