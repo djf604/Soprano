@@ -7,6 +7,8 @@ from django.contrib import messages
 from pyexcel.exceptions import FileTypeNotSupported
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.utils.html import escape
 
 import soprano.util
 from soprano.models import Layout
@@ -37,13 +39,23 @@ class FrontEnd(object):
         def post(self, request):
             normalized_sheet = normalize_sheet_file(request.FILES['upload-file'])
             if normalized_sheet is not None:
-                technical_data_uploader(
-                    sheet=normalized_sheet,
-                    print_pk=request.POST['print-pk'],
-                    scan_number=int(request.POST['scan-number']),
-                    sheet_filename=str(request.FILES['upload-file'])
-                )
-                messages.add_message(request, messages.INFO, 'Data from {} was successfully put into the database.'.format(
+                try:
+                    technical_data_uploader(
+                        sheet=normalized_sheet,
+                        print_pk=request.POST['print-pk'],
+                        scan_number=int(request.POST['scan-number']),
+                        sheet_filename=str(request.FILES['upload-file'])
+                    )
+                    messages.info(request, 'Data from {} was successfully put into the database.'.format(
+                        str(request.FILES['upload-file'])
+                    ))
+                except Exception as e:
+                    messages.info(request, 'There was an error uploading data from {}<br/> Error: {}'.format(
+                        str(request.FILES['upload-file']),
+                        escape(str(e))
+                    ))
+            else:
+                messages.info(request, 'There was an error normalizing {}'.format(
                     str(request.FILES['upload-file'])
                 ))
             return HttpResponseRedirect(reverse_lazy('index'))
@@ -55,7 +67,14 @@ class FrontEnd(object):
         def post(self, request):
             normalized_sheet = normalize_sheet_file(request.FILES['upload-file'])
             if normalized_sheet is not None:
-                print_layout_uploader(normalized_sheet, request.POST['print-name'])
+                try:
+                    print_layout_uploader(normalized_sheet, request.POST['print-name'])
+                    messages.info(request, 'Print {} successfully uploaded'.format(request.POST['print-name']))
+                except Exception as e:
+                    messages.info(request, 'There was an error uploading {}<br/> Error: {}'.format(
+                        request.POST['print-name'],
+                        escape(str(e))
+                    ))
             return HttpResponseRedirect(reverse_lazy('index'))
 
     class HandleDataDownload(LoginRequiredMixin, View):

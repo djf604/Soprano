@@ -309,11 +309,11 @@ input[type=file] {
   right: 0.5rem; }
 
 .alert-minimalist {
-  background-color: #A0A9CC;
-  border-color: rgba(149, 149, 149, 0.3);
-  border-radius: 3px;
+  background-color: #4D7298;
+  border: 3px solid #F7F9F9;
   color: #F7F9F9;
   padding: 10px;
+  font-size: 2rem;
   font-family: 'Hind', sans-serif; }
 
 .alert-minimalist > [data-notify="icon"] {

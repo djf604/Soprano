@@ -276,11 +276,11 @@ input[type=file] {
 }
 
 .alert-minimalist {
-	background-color: $wild-blue-yonder;
-	border-color: rgba(149, 149, 149, 0.3);
-	border-radius: 3px;
-	color: $ghost-white;
-	padding: 10px;
+  background-color: $blue-yonder;
+  border: 3px solid $ghost-white;
+  color: $ghost-white;
+  padding: 10px;
+  font-size: 2rem;
   font-family: 'Hind', sans-serif;
 }
 .alert-minimalist > [data-notify="icon"] {
