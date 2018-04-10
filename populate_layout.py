@@ -7,7 +7,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Soprano.settings')
 django.setup()
 
-from soprano.models import Layout, LayoutSpot, LayoutConstant, Sample, BioEntity
+from soprano.models import Layout, LayoutSpot, LayoutConstant, Sample, BioEntity, Print
 
 LAYOUT_TABLE_SLICE = slice(5, 22)
 mohana_imagestudio_map = {
@@ -19,11 +19,13 @@ mohana_imagestudio_map = {
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--sheet')
-parser.add_argument('--name')
+parser.add_argument('--print-name')
 args = vars(parser.parse_args())
 
 layout_constants = {l.name for l in LayoutConstant.objects.all()}
-layout = Layout(name=args['name'])
+print_ = Print.objects.get_or_create(name=args['print_name'])[0]
+print_.save()
+layout = Layout(print=print_)
 layout.save()
 
 layout_rows = 'ACEG'
@@ -58,5 +60,18 @@ with open(args['sheet']) as sheet:
                     layout_column=layout_col,
                     array_name=array_name,
                     array_spot=''.join((array_row_letter, array_column)),
+                    bioentity=spot_bioentity
+                ).save()
+
+            # Add blanks to Spots A9-D9
+            for array_row_letter in 'ABCD':
+                spot_bioentity = BioEntity(layout_constant=LayoutConstant.objects.get(name='BLANK'))
+                spot_bioentity.save()
+                LayoutSpot(
+                    layout=layout,
+                    layout_row=layout_row,
+                    layout_column=-1,
+                    array_name=array_name,
+                    array_spot=''.join((array_row_letter, '9')),
                     bioentity=spot_bioentity
                 ).save()

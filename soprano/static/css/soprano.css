@@ -316,10 +316,6 @@ input[type=file] {
   font-size: 2rem;
   font-family: 'Hind', sans-serif; }
 
-.alert-minimalist > [data-notify="icon"] {
-  height: 50px;
-  margin-right: 12px; }
-
 .alert-minimalist > [data-notify="title"] {
   color: #F7F9F9;
   display: block;

@@ -165,9 +165,6 @@ label {
     color: $ghost-white;
     display: flex;
     background-color: $blue-yonder;
-    //margin: 2rem 0 0 2rem;
-    //flex-grow: 1;
-    //width: calc(100% * (1/4) - 10px - 1px);
     padding: 3rem 2rem;
     flex-direction: column;
     justify-content: space-around;
@@ -282,10 +279,6 @@ input[type=file] {
   padding: 10px;
   font-size: 2rem;
   font-family: 'Hind', sans-serif;
-}
-.alert-minimalist > [data-notify="icon"] {
-	height: 50px;
-	margin-right: 12px;
 }
 .alert-minimalist > [data-notify="title"] {
 	color: $ghost-white;

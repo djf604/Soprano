@@ -117,7 +117,12 @@ class LayoutSpot(models.Model):
     bioentity = models.ForeignKey('BioEntity', on_delete=models.CASCADE)
 
     def __unicode__(self):
-        return '{} | {}'.format(self.layout.print.name, ''.join((self.layout_row, str(self.layout_column))))
+        return '{} | {} | {}::{}'.format(
+            self.layout.print.name,
+            ''.join((self.layout_row, str(self.layout_column))),
+            self.array_name,
+            self.array_spot
+        )
 
     def __str__(self):
         return self.__unicode__()
@@ -205,24 +210,26 @@ class SpotData(models.Model):
     channel = models.CharField('Sample Data Channel', max_length=8)
     array_name = models.CharField('Sample Data Array', max_length=8)
     spot_name = models.CharField('Sample Data Spot Coordinate', max_length=8)
-    signal = models.IntegerField('Sample Data Signal')
-    total = models.IntegerField('Sample Data Total')
-    area = models.IntegerField('Sample Data Area')
-    bkgnd = models.IntegerField('Sample Data Bkgnd')
-    type = models.CharField('Sample Data Type', max_length=128)
-    acquire_time = models.DateTimeField('Sample Data Acquire Time')
-    analysis = models.CharField('Sample Data Analysis', max_length=64)
-    analysis_bkgnd_method = models.CharField('Sample Data Analysis Bkgnd Method', max_length=64)
-    bkgnd_stddev = models.FloatField('Sample Data Bkgnd StdDev')
-    concentration = models.CharField('Sample Data Concentration', max_length=128)
-    height = models.IntegerField('Sample Data Height')
-    intensities = models.CharField('Sample Data Intensities', max_length=64)
-    max = models.IntegerField('Sample Data Max')
-    resolution = models.CharField('Sample Data Resolution', max_length=64)
-    stddev = models.FloatField('Sample Data StdDev')
-    trim_signal = models.FloatField('Sample Data Trim Signal')
-    trim_stddev = models.FloatField('Sample Data Trim StdDev')
-    width = models.IntegerField('Sample Data Width')
+    signal = models.FloatField('Sample Data Signal', blank=True, null=True)
+    total = models.FloatField('Sample Data Total', blank=True, null=True)
+    area = models.FloatField('Sample Data Area', blank=True, null=True)
+    bkgnd = models.FloatField('Sample Data Bkgnd', blank=True, null=True)
+    type = models.CharField('Sample Data Type', max_length=128, blank=True, null=True)
+    # acquire_time = models.DateTimeField('Sample Data Acquire Time', blank=True, null=True)
+    analysis = models.CharField('Sample Data Analysis', max_length=64, blank=True, null=True)
+    analysis_bkgnd_method = models.CharField('Sample Data Analysis Bkgnd Method', max_length=64, blank=True, null=True)
+    bkgnd_stddev = models.FloatField('Sample Data Bkgnd StdDev', blank=True, null=True)
+    # concentration = models.CharField('Sample Data Concentration', max_length=128, blank=True, null=True)
+    height = models.IntegerField('Sample Data Height', blank=True, null=True)
+    intensities = models.CharField('Sample Data Intensities', max_length=64, blank=True, null=True)
+    max = models.FloatField('Sample Data Max', blank=True, null=True)
+    resolution = models.CharField('Sample Data Resolution', max_length=64, blank=True, null=True)
+    stddev = models.FloatField('Sample Data StdDev', blank=True, null=True)
+    trim_signal = models.FloatField('Sample Data Trim Signal', blank=True, null=True)
+    trim_stddev = models.FloatField('Sample Data Trim StdDev', blank=True, null=True)
+    width = models.IntegerField('Sample Data Width', blank=True, null=True)
+    comments = models.TextField('Sample Comments', blank=True, null=True)
+    mean = models.FloatField('Sample Mean', blank=True, null=True)
 
     @classmethod
     def field_names(cls, only_data_fields=False):
@@ -255,10 +262,10 @@ class SpotData(models.Model):
         spotdata_data = list(SpotData.objects.values_list(*data_fields).get(pk=self.pk))
 
         # If acquire_time should be str, convert in place
-        if acquire_time_to_str:
-            acquire_time_i = data_fields.index('acquire_time')
-            acquire_time = spotdata_data[acquire_time_i]
-            spotdata_data[acquire_time_i] = acquire_time.strftime('%b %d, %Y %I:%M:%S %p')
+        # if acquire_time_to_str:
+        #     acquire_time_i = data_fields.index('acquire_time')
+        #     acquire_time = spotdata_data[acquire_time_i]
+        #     spotdata_data[acquire_time_i] = acquire_time.strftime('%b %d, %Y %I:%M:%S %p')
 
         # Add Bioentity name to front, return as a list
         if add_sample:

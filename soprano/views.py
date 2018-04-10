@@ -1,4 +1,6 @@
 import uuid
+import sys
+import traceback
 
 from django.shortcuts import render
 from django.views import View
@@ -54,6 +56,8 @@ class FrontEnd(object):
                         str(request.FILES['upload-file']),
                         escape(str(e))
                     ))
+                    print(e)
+                    traceback.print_exception(*sys.exc_info())
             else:
                 messages.info(request, 'There was an error normalizing {}'.format(
                     str(request.FILES['upload-file'])
@@ -65,7 +69,9 @@ class FrontEnd(object):
             return render(request, 'soprano/add_print.html')
 
         def post(self, request):
+            print(type(request.FILES['upload-file']))
             normalized_sheet = normalize_sheet_file(request.FILES['upload-file'])
+            print(type(normalized_sheet))
             if normalized_sheet is not None:
                 try:
                     print_layout_uploader(normalized_sheet, request.POST['print-name'])

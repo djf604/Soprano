@@ -66,13 +66,24 @@ def print_layout_uploader(sheet, print_name):
                     bioentity=spot_bioentity
                 ).save()
 
+            # Add blanks to Spots A9-D9
+            for array_row_letter in 'ABCD':
+                LayoutSpot(
+                    layout=layout,
+                    layout_row=layout_row,
+                    layout_column=-1,
+                    array_name=array_name,
+                    array_spot=''.join((array_row_letter, '9')),
+                    bioentity=BioEntity(layout_constant=LayoutConstant.objects.get(name='BLANK'))
+                ).save()
+
 
 def technical_data_uploader(sheet, print_pk, scan_number, sheet_filename):
     print_ = Print.objects.get(pk=print_pk)
     layout = print_.layout
 
-    # Get name of antibody used from 2nd row, 1st col, second half of split on '-'
-    antibody_used = sheet[1][0].strip().split('-')[1]
+    # Get name of antibody used from 2nd row, 1st col, second half of split on '_'
+    antibody_used = sheet[1][0].strip().split('_')[1]
 
     gel = Gel.objects.create(
         print=print_,
@@ -84,7 +95,7 @@ def technical_data_uploader(sheet, print_pk, scan_number, sheet_filename):
     sheet_iter = iter(sheet)
     data_keys = [h.strip().replace(' ', '_').replace('.', '').lower() for h in next(sheet_iter)][1:]
     for record in sheet_iter:
-        parse_acquire_time(record, acquire_time_i=ACQUIRE_TIME_I)
+        # parse_acquire_time(record, acquire_time_i=ACQUIRE_TIME_I)
         record[ARRAY_NAME] = record[ARRAY_NAME][FIRST_CHAR]
         bioentity = layout.bioentity_in_spot(record[ARRAY_NAME], record[SPOT_CODE], dereference=False)
 
